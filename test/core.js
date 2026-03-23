@@ -65,13 +65,13 @@ module.exports = testCase({
 		}
 		ok( pass, "jQuery('&lt;tag&gt;') needs optional document parameter to ease cross-frame DOM wrangling, see #968" );*/
 
-		var code = jQuery("<code/>");
+		var code = jQuery("<code></code>");
 		test.equals( code.length, 1, "Correct number of elements generated for code" );
 		test.equals( code.parent().length, 0, "Make sure that the generated HTML has no parent." );
 		var img = jQuery("<img/>");
 		test.equals( img.length, 1, "Correct number of elements generated for img" );
 		test.equals( img.parent().length, 0, "Make sure that the generated HTML has no parent." );
-		var div = jQuery("<div/><hr/><code/><b/>");
+		var div = jQuery("<div></div><hr/><code></code><b></b>");
 		test.equals( div.length, 4, "Correct number of elements generated for div hr code b" );
 		test.equals( div.parent().length, 0, "Make sure that the generated HTML has no parent." );
 
@@ -81,7 +81,7 @@ module.exports = testCase({
 
 		var exec = false;
 
-		var elem = jQuery("<div/>", {
+		var elem = jQuery("<div></div>", {
 			width: 10,
 			css: { paddingLeft:1, paddingRight:1 },
 			click: function(){ test.ok(exec, "Click executed."); },
@@ -429,7 +429,7 @@ module.exports = testCase({
 
 		test.ok( jQuery("<link rel='stylesheet'/>")[0], "Creating a link" );
 
-		test.ok( !jQuery("<script/>")[0].parentNode, "Create a script" );
+		test.ok( !jQuery("<script></script>")[0].parentNode, "Create a script" );
 
 		test.ok( jQuery("<input/>").attr("type", "hidden"), "Create an input and set the type." );
 
@@ -454,8 +454,8 @@ module.exports = testCase({
 	"jQuery('html', context)": function(test) {
 		test.expect(1);
 
-		var $div = jQuery("<div/>")[0];
-		var $span = jQuery("<span/>", $div);
+		var $div = jQuery("<div></div>")[0];
+		var $span = jQuery("<span></span>", $div);
 		test.equals($span.length, 1, "Verify a span created with a div context works, #1763");
 		test.done();
 	},
@@ -744,6 +744,14 @@ module.exports = testCase({
 		test.same( defaults, defaultsCopy, "Check if not modified: options1 must not be modified" );
 		test.same( options1, options1Copy, "Check if not modified: options1 must not be modified" );
 		test.same( options2, options2Copy, "Check if not modified: options2 must not be modified" );
+		test.done();
+	},
+
+	"jQuery.extend( true, ... ) Object.prototype pollution": function(test) {
+		test.expect(1);
+
+		jQuery.extend( true, {}, JSON.parse( "{\"__proto__\": {\"devMode\": true}}" ) );
+		test.ok( !( "devMode" in {} ), "Object.prototype not polluted" );
 		test.done();
 	},
 
